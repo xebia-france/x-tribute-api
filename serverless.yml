@@ -19,21 +19,34 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
+package:
+  include:
+    - firebase-admin-service-account.json
+
 functions:
   thank:
     handler: src/handler.handlerThank
+    environment:
+      DATABASE_NAME: ${env:DATABASE_NAME}
+      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
     events:
       - http:
           method: post
           path: thanks
   getThanks:
     handler: src/handler.handlerGetThanks
+    environment:
+      DATABASE_NAME: ${env:DATABASE_NAME}
+      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
     events:
       - http:
           method: get
           path: thanks
   updateThank:
     handler: src/handler.handlerUpdateThank
+    environment:
+      DATABASE_NAME: ${env:DATABASE_NAME}
+      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
     events:
       - http:
           method: put
