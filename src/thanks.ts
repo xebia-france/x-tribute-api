@@ -1,5 +1,5 @@
 import {Status} from "./types";
-import {getMessages, setMessage, updateMessage} from "./service";
+import {getMessages, isUsernameKnown, setMessage, updateMessage} from "./service";
 import {thankYouSchema, thankYouWithIdSchema} from "./validation";
 
 export const thank = async (body: string) => {
@@ -20,12 +20,20 @@ export const thank = async (body: string) => {
   };
 };
 
-export const getThanks = async () => {
-  const messages = await getMessages();
+export const getThanks = async (username: string) => {
+  if (await isReviewerAuthorized(username)) {
+    const messages = await getMessages();
+    return {
+      statusCode: 200,
+      body: JSON.stringify(messages),
+    };
+  }
   return {
-    statusCode: 200,
-    body: JSON.stringify(messages),
-  };
+    statusCode: 401,
+    body: JSON.stringify({
+      error: `${username} isn't allowed to access this resource.`
+    }),
+  }
 };
 
 export const updateThank = async (body: string) => {
@@ -41,6 +49,9 @@ export const updateThank = async (body: string) => {
     body: JSON.stringify({id}),
   };
 }
+
+const isReviewerAuthorized = async (username) =>
+  await isUsernameKnown(username)
 
 const validateThankYou = (schema, thankYou) => {
   const {error} = schema.validate(thankYou);

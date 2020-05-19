@@ -1,6 +1,6 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {getThanks, thank, updateThank} from "./thanks";
+import {getThanks, thank, updateThank} from './thanks';
 
 export const handlerThank: APIGatewayProxyHandler = async (
   event,
@@ -8,9 +8,17 @@ export const handlerThank: APIGatewayProxyHandler = async (
 ) => thank(event.body ? event.body : "{}");
 
 export const handlerGetThanks: APIGatewayProxyHandler = async (
-  _,
+  {requestContext: {authorizer}},
   _context
-) => getThanks();
+) => {
+  if (authorizer) {
+    return getThanks(authorizer.userEmail);
+  }
+  return {
+    statusCode: 401,
+    body: 'Cannot read required authorizer from event.'
+  }
+};
 
 export const handlerUpdateThank: APIGatewayProxyHandler = async (
   event,

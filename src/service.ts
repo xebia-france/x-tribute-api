@@ -2,6 +2,7 @@ import * as admin from 'firebase-admin';
 import {ThankYou} from "./types";
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
+const COLLECTION_REVIEWER = 'x-tribute-reviewer';
 
 const app = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -21,3 +22,6 @@ export const getMessages = async () =>
 
 export const updateMessage = async (id: string, thankYou: ThankYou) =>
   await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
+
+export const isUsernameKnown = async (username) =>
+  (await db.collection(COLLECTION_REVIEWER).doc(username).get()).exists;
