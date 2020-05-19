@@ -1,14 +1,9 @@
 service:
   name: xdd-tribute
 
-custom:
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
-
 plugins:
   - serverless-offline
-  - serverless-webpack
+  - serverless-plugin-typescript
 
 provider:
   name: aws
