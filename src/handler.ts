@@ -5,7 +5,7 @@ import {getThanks, thank, updateThank} from "./thanks";
 export const handlerThank: APIGatewayProxyHandler = async (
   event,
   _context
-) => thank(event.body);
+) => thank(event.body ? event.body : "{}");
 
 export const handlerGetThanks: APIGatewayProxyHandler = async (
   _,
@@ -15,4 +15,4 @@ export const handlerGetThanks: APIGatewayProxyHandler = async (
 export const handlerUpdateThank: APIGatewayProxyHandler = async (
   event,
   _context
-) => updateThank(event.body);
+) => updateThank(event.body ? event.body : "{}");
