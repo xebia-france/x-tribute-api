@@ -1,6 +1,6 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {getThanks, thank, updateThank} from './thanks';
+import {deliverThank, getThanks, thank, updateThank} from './thanks';
 
 export const handlerThank: APIGatewayProxyHandler = async (
   event,
@@ -24,3 +24,8 @@ export const handlerUpdateThank: APIGatewayProxyHandler = async (
   event,
   _context
 ) => updateThank(event.body ? event.body : "{}");
+
+export const handlerDeliverThank: APIGatewayProxyHandler = async (
+  event,
+  _context
+) => deliverThank(event.body ? event.body : "{}");

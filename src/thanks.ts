@@ -50,6 +50,17 @@ export const updateThank = async (body: string) => {
   };
 }
 
+export const deliverThank = async (body: string) => {
+  const {id} = JSON.parse(body);
+  // TODO: get thank by id on firestore, get recipient slack username by email, send notification, update status
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `Thank you ${id} has been delivered.`
+    })
+  }
+}
+
 const isReviewerAuthorized = async (username) =>
   await isUsernameKnown(username)
 
