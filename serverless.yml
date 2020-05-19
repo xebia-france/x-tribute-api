@@ -1,0 +1,40 @@
+service:
+  name: xdd-tribute
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+functions:
+  thank:
+    handler: src/handler.handlerThank
+    events:
+      - http:
+          method: post
+          path: thanks
+  getThanks:
+    handler: src/handler.handlerGetThanks
+    events:
+      - http:
+          method: get
+          path: thanks
+  updateThank:
+    handler: src/handler.handlerUpdateThank
+    events:
+      - http:
+          method: put
+          path: thanks
