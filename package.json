@@ -1,0 +1,34 @@
+{
+  "name": "x-tribute-api",
+  "version": "1.0.0",
+  "description": "API for X-Tribute app at PS Engineering",
+  "main": "handler.js",
+  "scripts": {
+    "test": "jest",
+    "start:offline": "sls offline",
+    "deploy": "sls deploy"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^3.8.0",
+    "@hapi/joi": "^17.1.1",
+    "firebase-admin": "^8.12.1",
+    "source-map-support": "^0.5.10"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^25.2.3",
+    "@types/joi": "^14.3.4",
+    "@types/node": "^10.12.18",
+    "fork-ts-checker-webpack-plugin": "^3.0.1",
+    "jest": "^26.0.1",
+    "serverless-offline": "^6.1.5",
+    "serverless-webpack": "^5.2.0",
+    "ts-jest": "^26.0.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "author": "Benjamin for PS Engineering <blacroix@xebia.fr>",
+  "license": "MIT"
+}
