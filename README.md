@@ -1,3 +1,5 @@
+![CI](https://github.com/xebia-france/x-tribute-api/workflows/CI/badge.svg)
+
 # X-Tribute API
 
 ## Stack
