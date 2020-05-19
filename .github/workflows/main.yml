@@ -6,17 +6,17 @@ on:
 
 jobs:
   deploy:
-    name: deploy
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: install dependencies
+      - name: Install dependencies
         uses: actions/setup-node@v1
         with:
           node-version: '12'
       - run: npm install
-      - name: deploy
+      - name: Deploy
         uses: serverless/github-action@master
         with:
           args: deploy
