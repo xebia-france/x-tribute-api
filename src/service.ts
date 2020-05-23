@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin';
 import {ThankYou} from './types';
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
-const COLLECTION_REVIEWER = 'x-tribute-reviewer';
+const COLLECTION_REVIEWER = 'x-tribute-reviewers';
 
 const app = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
