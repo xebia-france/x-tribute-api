@@ -1,12 +1,13 @@
 import * as Joi from '@hapi/joi';
+import {Status} from './types';
 
 const userSchema = Joi.object({
   name: Joi.string()
     .min(3)
     .required(),
 
-  email: Joi.string()
-    .email()
+  username: Joi.string()
+    .min(3)
     .required()
 });
 
@@ -25,8 +26,7 @@ export const thankYouWithIdSchema = thankYouSchema
     id: Joi.string()
       .required(),
 
-    status: Joi.number()
-      .positive()
-      .max(2)
+    status: Joi.string()
+      .valid(...Object.values(Status))
       .required(),
   });

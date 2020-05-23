@@ -24,6 +24,7 @@ functions:
     environment:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
+      SLACK_TOKEN: ${env:SLACK_TOKEN}
   getThanks:
     handler: src/handler.handlerGetThanks
     environment:
@@ -34,3 +35,13 @@ functions:
     environment:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
+  slack:
+    handler: src/handler.handlerSlack
+    environment:
+      DATABASE_NAME: ${env:DATABASE_NAME}
+      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
+      SLACK_TOKEN: ${env:SLACK_TOKEN}
+    events:
+      - http:
+          method: post
+          path: slack

@@ -1,21 +1,26 @@
-import {Status} from "./types";
-import {getMessages, isUsernameKnown, setMessage, updateMessage} from "./service";
-import {thankYouSchema, thankYouWithIdSchema} from "./validation";
+import {Status, ThankYou} from "./types";
+import {getMessage, getMessages, getReviewers, isUsernameKnown, setMessage, updateMessage} from "./service";
+import {thankYouSchema} from "./validation";
+import {getProfile, postMessage} from "./slack";
 
-export const thank = async (body: string) => {
-  const thankYou = JSON.parse(body);
+export const thank = async (thankYou: ThankYou) => {
   const error = validateThankYou(thankYouSchema, thankYou);
+
   if (error) {
     return error;
   }
-  const doc = await setMessage({
+
+  const th = await setMessage({
     ...thankYou,
     status: Status.DRAFT,
   });
+
+  await askForReview(th);
+
   return {
     statusCode: 201,
     body: JSON.stringify({
-      id: doc.id,
+      id: th.id,
     }),
   };
 };
@@ -36,30 +41,160 @@ export const getThanks = async (username: string) => {
   }
 };
 
-export const updateThank = async (body: string) => {
-  const thankYou = JSON.parse(body);
-  const error = validateThankYou(thankYouWithIdSchema, thankYou);
-  if (error) {
-    return error;
+export const checkBeforeApproveOrReject = async (username: string, id: string) => {
+  if (await isReviewerAuthorized(username)) {
+    try {
+      const message = await getMessage(id) as ThankYou;
+      switch (message.status) {
+        case Status.APPROVED:
+          return {
+            code: 400,
+            error: `⚠️ Already *approved* ✅ by <@${await getUser(message.reviewedBy!!)}>`,
+          };
+        case Status.REJECTED:
+          return {
+            code: 400,
+            error: `⚠️ Already *rejected* ❌ by <@${await getUser(message.reviewedBy!!)}>`,
+          };
+        default:
+          return {
+            code: 200,
+          };
+      }
+    } catch (e) {
+      return {
+        code: 400,
+        error: `⚠️ Cannot find thank you ${id} 🤷‍♂️`,
+      };
+    }
   }
-  const {id, ...thankYouWithoutId} = thankYou;
-  await updateMessage(id, thankYouWithoutId);
   return {
-    statusCode: 200,
-    body: JSON.stringify({id}),
-  };
+    code: 401,
+    error: `${username} isn't allowed to access this resource.`
+  }
+};
+
+export const approve = async (username: string, id: string) => {
+  if (await isReviewerAuthorized(username)) {
+    try {
+      const th = await getMessage(id) as ThankYou;
+      th.status = Status.APPROVED;
+      th.reviewedBy = username;
+      await updateMessage(id, th);
+      await deliverThank(th);
+    } catch (e) {
+      return {
+        code: 400,
+        error: `Cannot find thank you ${id}`,
+      }
+    }
+  }
+  return {
+    code: 401,
+    error: `${username} isn't allowed to access this resource.`
+  }
 }
 
-export const deliverThank = async (body: string) => {
-  const {id} = JSON.parse(body);
-  // TODO: get thank by id on firestore, get recipient slack username by email, send notification, update status
+export const reject = async (username: string, id: string) => {
+  if (await isReviewerAuthorized(username)) {
+    try {
+      const message = await getMessage(id) as ThankYou;
+      message.status = Status.REJECTED;
+      message.reviewedBy = username;
+      await updateMessage(id, message);
+    } catch (e) {
+      return {
+        code: 400,
+        error: `Cannot find thank you ${id}`,
+      }
+    }
+  }
   return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Thank you ${id} has been delivered.`
-    })
+    code: 401,
+    error: `${username} isn't allowed to access this resource.`
   }
 }
+
+const deliverThank = async (thankYou: ThankYou) => {
+  const author = await getUser(thankYou.author.username);
+  const text = `_📣 <@${author}> has a thank to say to you:_`;
+  await postMessage(
+    (await getProfile(`${thankYou.recipient.username}@xebia.fr`)).user.name,
+    text,
+    [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `>${thankYou.text.replace(/\n/g, '\n>')}`,
+        },
+      }
+    ]
+  );
+}
+
+const askForReview = async (thankYou: ThankYou) => {
+  const author = await getUser(thankYou.author.username);
+  const recipient = await getUser(thankYou.recipient.username);
+  const reviewers = await getReviewers();
+  const text = `🚨 _<@${author}> wrote a thank you to <@${recipient}>. Could you review it?_`;
+  for (const reviewer of reviewers) {
+    await postMessage(
+      reviewer,
+      text,
+      [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text,
+          },
+        },
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `>${thankYou.text.replace(/\n/g, '\n>')}`,
+          },
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Approve'
+              },
+              action_id: 'approve',
+              style: 'primary',
+              value: thankYou.id
+            },
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Reject'
+              },
+              action_id: 'reject',
+              style: 'danger',
+              value: thankYou.id
+            }
+          ]
+        }
+      ]);
+  }
+}
+
+const getUser = async (username: string) =>
+  (await getProfile(`${username}@xebia.fr`)).user.name;
 
 const isReviewerAuthorized = async (username) =>
   await isUsernameKnown(username)
