@@ -1,7 +1,7 @@
 export enum Status {
-  DRAFT = "DRAFT",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED"
+  DRAFT = 'DRAFT',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
 }
 
 export type ThankYou = {

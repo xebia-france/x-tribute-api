@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import {ThankYou} from "./types";
+import {ThankYou} from './types';
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
 const COLLECTION_REVIEWER = 'x-tribute-reviewer';
@@ -16,7 +16,7 @@ export const setMessage = async (thankYou: ThankYou) => {
   return {
     id: doc.id,
     ...(await doc.get()).data()
-  } as ThankYou
+  } as ThankYou;
 };
 
 export const getMessage = async (id: string) => ({

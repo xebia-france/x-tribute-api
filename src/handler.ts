@@ -1,8 +1,8 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {approve, checkBeforeApproveOrReject, getThanks, reject, thank} from './thanks';
+import {approve, checkBeforeApproveOrReject, getThanks, isSlackRequestAuthorized, reject, thank} from './thanks';
 import * as querystring from 'querystring';
-import {handleInteraction} from "./slack";
+import {handleInteraction} from './slack';
 
 export const handlerThank: APIGatewayProxyHandler = async (
   event,
@@ -14,7 +14,7 @@ export const handlerThank: APIGatewayProxyHandler = async (
   return {
     statusCode: 400,
     body: JSON.stringify({error: 'Body is required, cannot be empty.'})
-  }
+  };
 };
 
 export const handlerGetThanks: APIGatewayProxyHandler = async (
@@ -27,52 +27,68 @@ export const handlerGetThanks: APIGatewayProxyHandler = async (
   return {
     statusCode: 401,
     body: JSON.stringify({error: 'Cannot read required authorizer from event.'})
-  }
+  };
 };
 
 export const handlerSlack: APIGatewayProxyHandler = async (event, _context) => {
   if (event.body) {
-    const {actions, user, response_url, message} = JSON.parse(querystring.parse(event.body)['payload'] as string);
-    const result = await checkBeforeApproveOrReject(user.username, actions[0].value);
-    let responseSection;
-    if (result.code === 200) {
-      if (actions[0].action_id === 'approve') {
+    if (isSlackRequestAuthorized(
+      event.headers['X-Slack-Request-Timestamp'],
+      event.body,
+      event.headers['X-Slack-Signature'],
+      process.env.SIGNING_SECRET || ''
+    )) {
+      const {
+        actions,
+        user,
+        response_url,
+        message
+      } = JSON.parse(querystring.parse(event.body).payload as string);
+      const result = await checkBeforeApproveOrReject(user.username, actions[0].value);
+      let responseSection;
+      if (result.code === 200) {
+        if (actions[0].action_id === 'approve') {
+          responseSection = {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '_✅ You approved it._'
+            }
+          };
+          await approve(user.username, actions[0].value);
+        } else if (actions[0].action_id === 'reject') {
+          responseSection = {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '_❌ You rejected it._'
+            }
+          };
+          await reject(user.username, actions[0].value);
+        }
+      } else {
         responseSection = {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: '_✅ You approved it._'
+            text: result.error
           }
-        }
-        await approve(user.username, actions[0].value);
-      } else if (actions[0].action_id === 'reject') {
-        responseSection = {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '_❌ You rejected it._'
-          }
-        }
-        await reject(user.username, actions[0].value);
+        };
       }
+      await handleInteraction(
+        response_url,
+        message.text,
+        message.blocks,
+        responseSection);
     } else {
-      responseSection = {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: result.error
-        }
+      return {
+        statusCode: 401,
+        body: 'Cannot verify request.',
       };
     }
-    // noinspection ES6MissingAwait
-    await handleInteraction(
-      response_url,
-      message.text,
-      message.blocks,
-      responseSection);
   }
   return {
     statusCode: 200,
     body: '',
-  }
-}
+  };
+};

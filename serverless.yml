@@ -41,6 +41,7 @@ functions:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
+      SIGNING_SECRET: ${env:SIGNING_SECRET}
     events:
       - http:
           method: post

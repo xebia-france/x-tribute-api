@@ -1,7 +1,7 @@
 import {WebClient} from '@slack/web-api';
-import {Block, KnownBlock} from "@slack/types";
-import axios from "axios";
-import {SlackProfile} from "./types";
+import {Block, KnownBlock} from '@slack/types';
+import axios from 'axios';
+import {SlackProfile} from './types';
 
 const client = new WebClient(process.env.SLACK_TOKEN);
 
@@ -34,5 +34,5 @@ export const handleInteraction = async (
       ...(blocks ? blocks.filter(b => b.type !== 'actions') : []),
       ...(section ? [section] : []),
     ],
-  })
+  });
 };

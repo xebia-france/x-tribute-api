@@ -1,4 +1,4 @@
-import {getReviewers} from "./service";
+import {getReviewers} from './service';
 
 const username = process.env.USERNAME || '';
 

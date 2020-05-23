@@ -1,7 +1,8 @@
-import {Status, ThankYou} from "./types";
-import {getMessage, getMessages, getReviewers, isUsernameKnown, setMessage, updateMessage} from "./service";
-import {thankYouSchema} from "./validation";
-import {getProfile, postMessage} from "./slack";
+import {Status, ThankYou} from './types';
+import {getMessage, getMessages, getReviewers, isUsernameKnown, setMessage, updateMessage} from './service';
+import {thankYouSchema} from './validation';
+import {getProfile, postMessage} from './slack';
+import * as CryptoJS from 'crypto-js';
 
 export const thank = async (thankYou: ThankYou) => {
   const error = validateThankYou(thankYouSchema, thankYou);
@@ -38,7 +39,7 @@ export const getThanks = async (username: string) => {
     body: JSON.stringify({
       error: `${username} isn't allowed to access this resource.`
     }),
-  }
+  };
 };
 
 export const checkBeforeApproveOrReject = async (username: string, id: string) => {
@@ -70,8 +71,8 @@ export const checkBeforeApproveOrReject = async (username: string, id: string) =
   }
   return {
     code: 401,
-    error: `${username} isn't allowed to access this resource.`
-  }
+    error: `👮‍♀️ <@${await getUser(username)}> isn't allowed to access this resource.`
+  };
 };
 
 export const approve = async (username: string, id: string) => {
@@ -86,14 +87,14 @@ export const approve = async (username: string, id: string) => {
       return {
         code: 400,
         error: `Cannot find thank you ${id}`,
-      }
+      };
     }
   }
   return {
     code: 401,
-    error: `${username} isn't allowed to access this resource.`
-  }
-}
+    error: `👮‍♀️ <@${await getUser(username)}> isn't allowed to access this resource.`
+  };
+};
 
 export const reject = async (username: string, id: string) => {
   if (await isReviewerAuthorized(username)) {
@@ -106,14 +107,27 @@ export const reject = async (username: string, id: string) => {
       return {
         code: 400,
         error: `Cannot find thank you ${id}`,
-      }
+      };
     }
   }
   return {
     code: 401,
-    error: `${username} isn't allowed to access this resource.`
-  }
-}
+    error: `👮‍♀️ <@${await getUser(username)}> isn't allowed to access this resource.`
+  };
+};
+
+export const isSlackRequestAuthorized = (
+  timestamp: string,
+  body: string,
+  signature: string,
+  secret: string,
+) => {
+  const signBaseStr = `v0:${timestamp}:${body}`;
+  const hash = CryptoJS.HmacSHA256(signBaseStr, secret);
+  const hex = CryptoJS.enc.Hex.stringify(hash);
+  const mySign = `v0=${hex}`;
+  return mySign === signature;
+};
 
 const deliverThank = async (thankYou: ThankYou) => {
   const author = await getUser(thankYou.author.username);
@@ -138,7 +152,7 @@ const deliverThank = async (thankYou: ThankYou) => {
       }
     ]
   );
-}
+};
 
 const askForReview = async (thankYou: ThankYou) => {
   const author = await getUser(thankYou.author.username);
@@ -191,13 +205,13 @@ const askForReview = async (thankYou: ThankYou) => {
         }
       ]);
   }
-}
+};
 
 const getUser = async (username: string) =>
   (await getProfile(`${username}@xebia.fr`)).user.name;
 
 const isReviewerAuthorized = async (username) =>
-  await isUsernameKnown(username)
+  await isUsernameKnown(username);
 
 const validateThankYou = (schema, thankYou) => {
   const {error} = schema.validate(thankYou);
@@ -210,4 +224,4 @@ const validateThankYou = (schema, thankYou) => {
     };
   }
   return;
-}
+};
