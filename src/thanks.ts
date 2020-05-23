@@ -2,7 +2,8 @@ import {Status, ThankYou} from './types';
 import {getMessage, getMessages, getReviewers, isUsernameKnown, setMessage, updateMessage} from './service';
 import {thankYouSchema} from './validation';
 import {getProfile, postMessage} from './slack';
-import * as CryptoJS from 'crypto-js';
+import * as HmacSHA256 from 'crypto-js/hmac-sha256';
+import * as Hex from 'crypto-js/enc-hex';
 
 export const thank = async (thankYou: ThankYou) => {
   const error = validateThankYou(thankYouSchema, thankYou);
@@ -123,8 +124,8 @@ export const isSlackRequestAuthorized = (
   secret: string,
 ) => {
   const signBaseStr = `v0:${timestamp}:${body}`;
-  const hash = CryptoJS.HmacSHA256(signBaseStr, secret);
-  const hex = CryptoJS.enc.Hex.stringify(hash);
+  const hash = HmacSHA256(signBaseStr, secret);
+  const hex = Hex.stringify(hash);
   const mySign = `v0=${hex}`;
   return mySign === signature;
 };
