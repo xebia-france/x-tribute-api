@@ -25,7 +25,7 @@ Call functions:
 ### POST thanks
 
 ```shell script
-curl -X POST -d '{"text": "thank you", "author": {"name": "John D", "email": "jd@xebia.fr"}, "recipient": {"name": "Doe J", "email": "dj@xebia.fr"}}' http://localhost:3000/dev/thanks
+curl -X POST -d '{"text": "thank you", "author": {"name": "John D", "username": "jd"}, "recipient": {"name": "Doe J", "username": "dj"}}' http://localhost:3000/dev/thanks
 ```
 
 Response:
@@ -46,14 +46,14 @@ Response:
     "id": "xxx",
     "author": {
       "name": "John D",
-      "email": "jd@xebia.fr"
+      "username": "jd"
     },
     "text": "Thank you",
     "recipient": {
-      "email": "dj@xebia.fr",
+      "email": "dj",
       "name": "Doe J"
     },
-    "status": 0
+    "status": "DRAFT"
   }
 ]
 ```
