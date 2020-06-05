@@ -5,6 +5,11 @@ import {getProfile, postMessage} from './slack';
 import * as HmacSHA256 from 'crypto-js/hmac-sha256';
 import * as Hex from 'crypto-js/enc-hex';
 
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Credentials': true,
+};
+
 export const thank = async (thankYou: ThankYou) => {
   const error = validateThankYou(thankYouSchema, thankYou);
 
@@ -21,6 +26,10 @@ export const thank = async (thankYou: ThankYou) => {
 
   return {
     statusCode: 201,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+    },
     body: JSON.stringify({
       id: th.id,
     }),
@@ -32,11 +41,13 @@ export const getThanks = async (username: string) => {
     const messages = await getMessages();
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(messages),
     };
   }
   return {
     statusCode: 401,
+    headers,
     body: JSON.stringify({
       error: `${username} isn't allowed to access this resource.`
     }),
