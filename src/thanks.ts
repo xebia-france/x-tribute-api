@@ -1,5 +1,13 @@
 import {Status, ThankYou} from './types';
-import {getMessage, getMessages, getReviewers, isUsernameKnown, setMessage, updateMessage} from './service';
+import {
+  getApprovedMessages,
+  getMessage,
+  getMessages,
+  getReviewers,
+  isUsernameKnown,
+  setMessage,
+  updateMessage
+} from './service';
 import {thankYouSchema} from './validation';
 import {getProfile, postMessage} from './slack';
 import * as HmacSHA256 from 'crypto-js/hmac-sha256';
@@ -140,7 +148,7 @@ export const isSlackRequestAuthorized = (
 const deliverThank = async (thankYou: ThankYou) => {
   const author = await getUser(thankYou.author.username);
   const text = `_📣 <@${author}> has a thank to say to you:_`;
-  await postMessage(
+  return await postMessage(
     (await getProfile(`${thankYou.recipient.username}@xebia.fr`)).user.name,
     text,
     [
@@ -212,6 +220,20 @@ const askForReview = async (thankYou: ThankYou) => {
           ]
         }
       ]);
+  }
+};
+
+export const deliverPastThanks = async () => {
+  const messages = await getApprovedMessages();
+  for (let message of messages) {
+    if (message.id) {
+      await deliverThank(message);
+      console.info(`Message ${message.id} delivered to ${message.recipient.username}`);
+      await updateMessage(message.id, {
+        ...message,
+        status: Status.DELIVERED
+      });
+    }
   }
 };
 

@@ -9,13 +9,18 @@ export const postMessage = (
   username: string,
   text: string,
   blocks?: (KnownBlock | Block)[]
-) =>
-  client.chat.postMessage({
-    channel: `@${username}`,
-    text,
-    blocks,
-    as_user: true,
-  });
+) => {
+  if (process.env.IS_PROD) {
+    return client.chat.postMessage({
+      channel: `@${username}`,
+      text,
+      blocks,
+      as_user: true,
+    });
+  } else {
+    console.info(`postMessage ${username} ${text} ${blocks ? JSON.stringify(blocks) : ''}`);
+  }
+};
 
 export const getProfile = async (email: string): Promise<SlackProfile> =>
   (await client.users.lookupByEmail({
