@@ -94,7 +94,7 @@ export const approve = async (username: string, id: string) => {
       th.status = Status.APPROVED;
       th.reviewedBy = username;
       await updateMessage(id, th);
-      await deliverThank(th);
+      // await deliverThank(th);
     } catch (e) {
       return {
         code: 400,
