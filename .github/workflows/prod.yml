@@ -1,8 +1,4 @@
-name: CI/CD Dev
-
-on:
-  push:
-    branches: [ master ]
+name: CI/CD Prod
 
 jobs:
   deploy:
@@ -23,8 +19,8 @@ jobs:
           npm install
           npm run deploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}

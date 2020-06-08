@@ -30,11 +30,6 @@ functions:
     environment:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
-  updateThank:
-    handler: src/handler.handlerUpdateThank
-    environment:
-      DATABASE_NAME: ${env:DATABASE_NAME}
-      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
   slack:
     handler: src/handler.handlerSlack
     environment:
