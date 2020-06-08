@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "start:offline": "sls offline",
-    "deploy": "sls deploy"
+    "deploy": "sls deploy",
+    "deploy:prod": "sls deploy --stage prod"
   },
   "dependencies": {
     "@google-cloud/firestore": "^3.8.0",
