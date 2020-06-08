@@ -26,10 +26,7 @@ export const thank = async (thankYou: ThankYou) => {
 
   return {
     statusCode: 201,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-    },
+    headers,
     body: JSON.stringify({
       id: th.id,
     }),
@@ -94,7 +91,6 @@ export const approve = async (username: string, id: string) => {
       th.status = Status.APPROVED;
       th.reviewedBy = username;
       await updateMessage(id, th);
-      // await deliverThank(th);
     } catch (e) {
       return {
         code: 400,
