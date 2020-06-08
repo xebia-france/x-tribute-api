@@ -1,6 +1,14 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {approve, checkBeforeApproveOrReject, getThanks, isSlackRequestAuthorized, reject, thank} from './thanks';
+import {
+  approve,
+  checkBeforeApproveOrReject,
+  deliverPastThanks,
+  getThanks,
+  isSlackRequestAuthorized,
+  reject,
+  thank
+} from './thanks';
 import * as querystring from 'querystring';
 import {handleInteraction} from './slack';
 
@@ -91,4 +99,23 @@ export const handlerSlack: APIGatewayProxyHandler = async (event, _context) => {
     statusCode: 200,
     body: '',
   };
+};
+
+export const handlerDeliverPastThankYou: APIGatewayProxyHandler = async (event, _context) => {
+  try {
+    if (process.env.IS_PROD) {
+      await deliverPastThanks();
+    }
+    return {
+      statusCode: 200,
+      body: 'Thanks delivered.'
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error
+      })
+    };
+  }
 };

@@ -1,6 +1,7 @@
 export enum Status {
-  DRAFT = 'DRAFT',
   APPROVED = 'APPROVED',
+  DELIVERED = 'DELIVERED',
+  DRAFT = 'DRAFT',
   REJECTED = 'REJECTED'
 }
 

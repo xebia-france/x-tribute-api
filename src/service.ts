@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import {ThankYou} from './types';
+import {Status, ThankYou} from './types';
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
 const COLLECTION_REVIEWER = 'x-tribute-reviewers';
@@ -30,11 +30,16 @@ export const getMessages = async () =>
     ...d.data(),
   }));
 
-export const updateMessage = async (id: string, thankYou: ThankYou) =>
-  await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
+export const updateMessage = async (id: string, thankYou: ThankYou) => {
+  return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
+};
 
 export const isUsernameKnown = async (username) =>
   (await db.collection(COLLECTION_REVIEWER).doc(username).get()).exists;
 
 export const getReviewers = async () =>
   (await db.collection(COLLECTION_REVIEWER).get()).docs.map(d => d.id);
+
+export const getApprovedMessages = async () =>
+  (await db.collection(COLLECTION_THANKS).where('status', '==', Status.APPROVED).get())
+    .docs.map(d => ({id: d.id, ...d.data()} as ThankYou));

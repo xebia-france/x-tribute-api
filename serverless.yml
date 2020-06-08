@@ -25,11 +25,22 @@ functions:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
+      IS_PROD: ${env:IS_PROD}
   getThanks:
     handler: src/handler.handlerGetThanks
     environment:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
+      IS_PROD: ${env:IS_PROD}
+  deliverPastThankYou:
+    handler: src/handler.handlerDeliverPastThankYou
+    environment:
+      DATABASE_NAME: ${env:DATABASE_NAME}
+      GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
+      SLACK_TOKEN: ${env:SLACK_TOKEN}
+      IS_PROD: ${env:IS_PROD}
+    events:
+      - schedule: cron(0 10 1 * ? *)
   slack:
     handler: src/handler.handlerSlack
     environment:
@@ -37,6 +48,7 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       SIGNING_SECRET: ${env:SIGNING_SECRET}
+      IS_PROD: ${env:IS_PROD}
     events:
       - http:
           method: post
