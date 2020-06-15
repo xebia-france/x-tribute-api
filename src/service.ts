@@ -1,8 +1,9 @@
 import * as admin from 'firebase-admin';
-import {Status, ThankYou} from './types';
+import {SlackProfile, Status, ThankYou} from './types';
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
 const COLLECTION_REVIEWER = 'x-tribute-reviewers';
+const COLLECTION_NO_REMINDER = 'x-tribute-no-reminder';
 
 const app = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -31,10 +32,12 @@ export const getMessages = async () =>
   }));
 
 export const updateMessage = async (id: string, thankYou: ThankYou) => {
-  return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
+  if (process.env.IS_PROD) {
+    return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
+  }
 };
 
-export const isUsernameKnown = async (username) =>
+export const isUsernameInReviewerCollection = async (username) =>
   (await db.collection(COLLECTION_REVIEWER).doc(username).get()).exists;
 
 export const getReviewers = async () =>
@@ -43,3 +46,9 @@ export const getReviewers = async () =>
 export const getApprovedMessages = async () =>
   (await db.collection(COLLECTION_THANKS).where('status', '==', Status.APPROVED).get())
     .docs.map(d => ({id: d.id, ...d.data()} as ThankYou));
+
+export const getUnwantedReminderUsers = async (): Promise<string[]> =>
+  (await db.collection(COLLECTION_NO_REMINDER).get()).docs.map(d => d.id);
+
+export const setUnwantedReminderUser = async (id: string, username: string) =>
+  await db.collection(COLLECTION_NO_REMINDER).doc(id).set({username});

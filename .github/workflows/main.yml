@@ -28,4 +28,3 @@ jobs:
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
-          IS_PROD: false

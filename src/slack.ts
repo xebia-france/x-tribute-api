@@ -41,3 +41,27 @@ export const handleInteraction = async (
     ],
   });
 };
+
+export const fetchUsers = async () =>
+  await client.paginate(
+    'users.list',
+    {}, (_ => {
+    }),
+    ((accumulator, page) => {
+      if (!accumulator) {
+        accumulator = [];
+      }
+
+      const isUser = u =>
+        u.deleted === false &&
+        u.is_bot === false &&
+        u.is_app_user === false;
+
+      // @ts-ignore
+      accumulator.push(page.members.filter(isUser));
+
+      return accumulator;
+    }));
+
+export const getUsernameByEmailPrefix = async (username: string) =>
+  (await getProfile(`${username}@xebia.fr`)).user.name;

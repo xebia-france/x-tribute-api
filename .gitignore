@@ -21,3 +21,6 @@ firebase-admin-service-account.json
 .idea/modules.xml
 .idea/vcs.xml
 *.iml
+
+# Testing purpose
+local.test.ts

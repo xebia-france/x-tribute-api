@@ -1,4 +1,4 @@
-import {getProfile, postMessage} from './slack';
+import {fetchUsers, getProfile, postMessage} from './slack';
 
 const username = process.env.USERNAME || '';
 
@@ -63,5 +63,4 @@ describe('Slack', () => {
     const {user: {name}} = await getProfile(`${username}@xebia.fr`) as { ok: boolean; user: { name: string } };
     expect(name).toEqual(username);
   });
-})
-;
+});

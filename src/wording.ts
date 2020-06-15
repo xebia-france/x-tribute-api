@@ -1,0 +1,1 @@
+export const reminder = (name: string, link: string) => `Bonjour <@${name}> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t'ont aidé(e)s ces dernières semaines, ${link} est à ta disposition.`;
