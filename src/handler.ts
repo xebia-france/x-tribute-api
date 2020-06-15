@@ -1,23 +1,34 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import 'source-map-support/register';
-import {
-  approve,
-  checkBeforeApproveOrReject,
-  deliverPastThanks,
-  getThanks,
-  isSlackRequestAuthorized,
-  reject,
-  thank
-} from './thanks';
-import * as querystring from 'querystring';
-import {handleInteraction} from './slack';
+import {thank} from './thank/thank';
+import {getThanks} from './getThanks/getThanks';
+import {handleSlackRequest} from './slack/handler';
+import {deliverPastThanks} from './deliver/deliver';
+import {remindEveryone} from './reminder/remind';
 
-export const handlerThank: APIGatewayProxyHandler = async (
-  event,
-  _context
-) => {
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Credentials': true,
+};
+
+export const handlerThank: APIGatewayProxyHandler = async (event, _context) => {
   if (event.body) {
-    return thank(JSON.parse(event.body));
+    try {
+      const id = await thank(JSON.parse(event.body));
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          message: 'Thank created.'
+        })
+      };
+    } catch (error) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify(error)
+      };
+    }
   }
   return {
     statusCode: 400,
@@ -30,68 +41,41 @@ export const handlerGetThanks: APIGatewayProxyHandler = async (
   _context
 ) => {
   if (authorizer) {
-    return getThanks(authorizer.userEmail.split('@xebia.fr')[0]);
+    try {
+      const messages = await getThanks(authorizer.userEmail.split('@xebia.fr')[0]);
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(messages),
+      };
+    } catch (error) {
+      return {
+        statusCode: error.code,
+        headers,
+        body: JSON.stringify(error),
+      };
+    }
   }
   return {
     statusCode: 401,
-    body: JSON.stringify({error: 'Cannot read required authorizer from event.'})
+    body: JSON.stringify(
+      {error: 'Cannot read required authorizer from event.'}
+    )
   };
 };
 
 export const handlerSlack: APIGatewayProxyHandler = async (event, _context) => {
   if (event.body) {
-    if (isSlackRequestAuthorized(
-      event.headers['X-Slack-Request-Timestamp'],
-      event.body,
-      event.headers['X-Slack-Signature'],
-      process.env.SIGNING_SECRET || ''
-    )) {
-      const {
-        actions,
-        user,
-        response_url,
-        message
-      } = JSON.parse(querystring.parse(event.body).payload as string);
-      const result = await checkBeforeApproveOrReject(user.username, actions[0].value);
-      let responseSection;
-      if (result.code === 200) {
-        if (actions[0].action_id === 'approve') {
-          responseSection = {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '_✅ You approved it._'
-            }
-          };
-          await approve(user.username, actions[0].value);
-        } else if (actions[0].action_id === 'reject') {
-          responseSection = {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '_❌ You rejected it._'
-            }
-          };
-          await reject(user.username, actions[0].value);
-        }
-      } else {
-        responseSection = {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: result.error
-          }
-        };
-      }
-      await handleInteraction(
-        response_url,
-        message.text,
-        message.blocks,
-        responseSection);
-    } else {
+    try {
+      await handleSlackRequest(event);
       return {
-        statusCode: 401,
-        body: 'Cannot verify request.',
+        statusCode: 200,
+        body: ''
+      };
+    } catch (e) {
+      return {
+        statusCode: e.code,
+        body: JSON.stringify(e)
       };
     }
   }
@@ -102,20 +86,21 @@ export const handlerSlack: APIGatewayProxyHandler = async (event, _context) => {
 };
 
 export const handlerDeliverPastThankYou: APIGatewayProxyHandler = async (event, _context) => {
-  try {
-    if (process.env.IS_PROD) {
-      await deliverPastThanks();
-    }
-    return {
-      statusCode: 200,
-      body: 'Thanks delivered.'
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error
-      })
-    };
-  }
+  const count = await deliverPastThanks();
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `${count} thank(s) delivered.`
+    })
+  };
+};
+
+export const handlerReminder: APIGatewayProxyHandler = async (event, _context) => {
+  const count = await remindEveryone();
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `${count} reminder(s) sent.`
+    })
+  };
 };
