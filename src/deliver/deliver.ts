@@ -1,6 +1,7 @@
 import {Status, ThankYou} from '../types';
 import {getUsernameByEmailPrefix, postMessage} from '../slack';
 import {getApprovedMessages, updateMessage} from '../service';
+import {trackNewThankDelivered} from '../statistics/statistics';
 
 export const deliverPastThanks = async () => {
   const messages = await getApprovedMessages();
@@ -11,6 +12,7 @@ export const deliverPastThanks = async () => {
         ...message,
         status: Status.DELIVERED
       });
+      await trackNewThankDelivered(message.recipient.username);
     }
   }
   return messages.length;

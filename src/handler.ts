@@ -5,6 +5,7 @@ import {getThanks} from './getThanks/getThanks';
 import {handleSlackRequest} from './slack/handler';
 import {deliverPastThanks} from './deliver/deliver';
 import {remindEveryone} from './reminder/remind';
+import {shareStatistics} from './statistics/statistics';
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
@@ -102,5 +103,13 @@ export const handlerReminder: APIGatewayProxyHandler = async (event, _context) =
     body: JSON.stringify({
       message: `${count} reminder(s) sent.`
     })
+  };
+};
+
+export const handlerStatistics: APIGatewayProxyHandler = async (event, _context) => {
+  const statistics = await shareStatistics();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(statistics)
   };
 };

@@ -2,6 +2,7 @@ import {Status, ThankYou} from '../types';
 import {thankYouSchema} from '../validation';
 import {getReviewers, setMessage} from '../service';
 import {getProfile, postMessage} from '../slack';
+import {trackNewThankPosted} from '../statistics/statistics';
 
 export const thank = async (thankYou: ThankYou) => {
   _validateThankYou(thankYouSchema, thankYou);
@@ -10,6 +11,10 @@ export const thank = async (thankYou: ThankYou) => {
     ...thankYou,
     status: Status.DRAFT,
   });
+
+  await trackNewThankPosted(
+    thankYou.author.username
+  );
 
   await _askForReview(th);
 
