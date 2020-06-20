@@ -23,9 +23,9 @@ describe('Reminder', () => {
 
     // THEN
     expect(postMessage).toBeCalledTimes(1);
-    expect(postMessage).toBeCalledWith('to', 'Bonjour <@tomate> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, https://my.xebia.fr/thankyou est à ta disposition.', [{
+    expect(postMessage).toBeCalledWith('to', 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, https://my.xebia.fr/thankyou est à ta disposition.', [{
       'text': {
-        'text': 'Bonjour <@tomate> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, https://my.xebia.fr/thankyou est à ta disposition.',
+        'text': 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, https://my.xebia.fr/thankyou est à ta disposition.',
         'type': 'mrkdwn'
       }, 'type': 'section'
     }, {

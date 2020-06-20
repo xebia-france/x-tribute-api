@@ -58,7 +58,7 @@ functions:
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
     events:
-      - schedule: cron(0 10 15 * ? *)
+      - schedule: cron(0 10 24 * ? *)
   slack:
     handler: src/handler.handlerSlack
     environment:

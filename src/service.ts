@@ -30,7 +30,7 @@ export const getMessages = async () =>
   (await db.collection(COLLECTION_THANKS).get()).docs.map(d => ({
     id: d.id,
     ...d.data(),
-  }));
+  } as ThankYou));
 
 export const updateMessage = async (id: string, thankYou: ThankYou) => {
   if (process.env.IS_PROD) {
@@ -65,3 +65,6 @@ export const aggregateStatistic = async (id: string, key: string, element: strin
   statistic[key] = firebase.firestore.FieldValue.arrayUnion(element);
   return await db.collection(COLLECTION_STATISTICS).doc(id).set(statistic, {merge: true});
 };
+
+export const getStatistics = async (period: string) =>
+  (await db.collection(COLLECTION_STATISTICS).doc(period).get()).data();

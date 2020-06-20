@@ -8,7 +8,7 @@ export const remindEveryone = async () => {
   const toRemindUsers = users.filter(u => noReminderUsers.indexOf(u.id) === -1);
   const link = 'https://my.xebia.fr/thankyou';
   for (let user of toRemindUsers) {
-    const message = reminder(user.name, link);
+    const message = reminder(user.id, link);
     await postMessage(
       user.id,
       message,
