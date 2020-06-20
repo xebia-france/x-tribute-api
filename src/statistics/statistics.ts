@@ -20,7 +20,7 @@ export const shareStatistics = async () => {
     }
   } as SectionBlock;
 
-  await postMessage('#cicero-tests', '', [
+  await postMessage('#general', '', [
     {
       type: 'section',
       text: {
