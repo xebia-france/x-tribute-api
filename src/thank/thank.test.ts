@@ -1,4 +1,4 @@
-import {_askForReview, _getUser, _validateThankYou} from './thank';
+import {_askForReview, _getUserId, _validateThankYou} from './thank';
 import {thankYouSchema} from '../validation';
 import * as slack from '../slack';
 import * as service from '../service';
@@ -29,9 +29,9 @@ describe('thank', () => {
   it('should get user', async () => {
     // GIVEN
     const getProfile = jest.spyOn(slack, 'getProfile');
-    getProfile.mockImplementation((email: string) => Promise.resolve({ok: true, user: {name: email}}));
+    getProfile.mockImplementation((email: string) => Promise.resolve({ok: true, user: {id: email, name: email}}));
     // WHEN
-    const user = await _getUser('john');
+    const user = await _getUserId('john');
     // THEN
     expect(user).toEqual('john@xebia.fr');
     // AFTER
@@ -41,7 +41,7 @@ describe('thank', () => {
   it('should ask for review', async () => {
     // GIVEN
     const getProfile = jest.spyOn(slack, 'getProfile');
-    getProfile.mockImplementation((email: string) => Promise.resolve({ok: true, user: {name: email}}));
+    getProfile.mockImplementation((email: string) => Promise.resolve({ok: true, user: {id: email, name: email}}));
 
     const postMessage = jest.spyOn(slack, 'postMessage');
     postMessage.mockImplementation((username: string, text: string, blocks?: (KnownBlock | Block)[]) => Promise.resolve({ok: true}));
@@ -65,7 +65,7 @@ describe('thank', () => {
     // THEN
     expect(postMessage).toBeCalledTimes(1);
     expect(postMessage).toHaveBeenCalledWith(
-      'orange',
+      'orange@xebia.fr',
       '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr>. Peux-tu le relire ? 🙏_',
       [
         {

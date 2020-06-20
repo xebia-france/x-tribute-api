@@ -1,12 +1,13 @@
-import * as admin from 'firebase-admin';
-import {SlackProfile, Status, ThankYou} from './types';
+import * as firebase from 'firebase-admin';
+import {Status, ThankYou} from './types';
 
 const COLLECTION_THANKS = 'x-tribute-thanks';
 const COLLECTION_REVIEWER = 'x-tribute-reviewers';
 const COLLECTION_NO_REMINDER = 'x-tribute-no-reminder';
+const COLLECTION_STATISTICS = 'x-tribute-statistics';
 
-const app = admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+const app = firebase.initializeApp({
+  credential: firebase.credential.applicationDefault(),
   databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
 });
 
@@ -29,10 +30,10 @@ export const getMessages = async () =>
   (await db.collection(COLLECTION_THANKS).get()).docs.map(d => ({
     id: d.id,
     ...d.data(),
-  }));
+  } as ThankYou));
 
 export const updateMessage = async (id: string, thankYou: ThankYou) => {
-  if (process.env.IS_PROD) {
+  if (process.env.IS_PROD === 'true') {
     return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
   }
 };
@@ -52,3 +53,18 @@ export const getUnwantedReminderUsers = async (): Promise<string[]> =>
 
 export const setUnwantedReminderUser = async (id: string, username: string) =>
   await db.collection(COLLECTION_NO_REMINDER).doc(id).set({username});
+
+export const incrementStatistic = async (id: string, key: string, n: number = 1) => {
+  const statistic = {};
+  statistic[key] = firebase.firestore.FieldValue.increment(n);
+  return await db.collection(COLLECTION_STATISTICS).doc(id).set(statistic, {merge: true});
+};
+
+export const aggregateStatistic = async (id: string, key: string, element: string) => {
+  const statistic = {};
+  statistic[key] = firebase.firestore.FieldValue.arrayUnion(element);
+  return await db.collection(COLLECTION_STATISTICS).doc(id).set(statistic, {merge: true});
+};
+
+export const getStatistics = async (period: string) =>
+  (await db.collection(COLLECTION_STATISTICS).doc(period).get()).data();

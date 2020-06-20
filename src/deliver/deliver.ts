@@ -1,6 +1,7 @@
 import {Status, ThankYou} from '../types';
-import {getUsernameByEmailPrefix, postMessage} from '../slack';
+import {getIdByEmailPrefix, postMessage} from '../slack';
 import {getApprovedMessages, updateMessage} from '../service';
+import {trackNewThankDelivered} from '../statistics/statistics';
 
 export const deliverPastThanks = async () => {
   const messages = await getApprovedMessages();
@@ -11,16 +12,17 @@ export const deliverPastThanks = async () => {
         ...message,
         status: Status.DELIVERED
       });
+      await trackNewThankDelivered(message.recipient.username);
     }
   }
   return messages.length;
 };
 
 const _deliverThank = async (thankYou: ThankYou) => {
-  const author = await getUsernameByEmailPrefix(thankYou.author.username);
+  const author = await getIdByEmailPrefix(thankYou.author.username);
   const text = `_📣 <@${author}> souhaite te dire merci :_`;
   return await postMessage(
-    await getUsernameByEmailPrefix(thankYou.recipient.username),
+    await getIdByEmailPrefix(thankYou.recipient.username),
     text,
     [
       {

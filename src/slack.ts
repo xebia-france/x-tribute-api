@@ -6,19 +6,19 @@ import {SlackProfile} from './types';
 const client = new WebClient(process.env.SLACK_TOKEN);
 
 export const postMessage = (
-  username: string,
+  channel: string,
   text: string,
   blocks?: (KnownBlock | Block)[]
 ) => {
-  if (process.env.IS_PROD) {
+  if (process.env.IS_PROD === 'true') {
     return client.chat.postMessage({
-      channel: `@${username}`,
+      channel,
       text,
       blocks,
       as_user: true,
     });
   } else {
-    console.info(`postMessage ${username} ${text} ${blocks ? JSON.stringify(blocks) : ''}`);
+    console.info(`postMessage ${channel} ${text} ${blocks ? JSON.stringify(blocks) : ''}`);
   }
 };
 
@@ -63,5 +63,5 @@ export const fetchUsers = async () =>
       return accumulator;
     }));
 
-export const getUsernameByEmailPrefix = async (username: string) =>
-  (await getProfile(`${username}@xebia.fr`)).user.name;
+export const getIdByEmailPrefix = async (username: string) =>
+  (await getProfile(`${username}@xebia.fr`)).user.id;

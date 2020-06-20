@@ -18,6 +18,7 @@ export type ThankYou = {
 export type SlackProfile = {
   ok: boolean;
   user: {
+    id: string;
     name: string;
   }
 }

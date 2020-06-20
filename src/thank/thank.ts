@@ -2,6 +2,7 @@ import {Status, ThankYou} from '../types';
 import {thankYouSchema} from '../validation';
 import {getReviewers, setMessage} from '../service';
 import {getProfile, postMessage} from '../slack';
+import {trackNewThankPosted} from '../statistics/statistics';
 
 export const thank = async (thankYou: ThankYou) => {
   _validateThankYou(thankYouSchema, thankYou);
@@ -11,19 +12,23 @@ export const thank = async (thankYou: ThankYou) => {
     status: Status.DRAFT,
   });
 
+  await trackNewThankPosted(
+    thankYou.author.username
+  );
+
   await _askForReview(th);
 
   return th.id;
 };
 
 export const _askForReview = async (thankYou: ThankYou) => {
-  const author = await _getUser(thankYou.author.username);
-  const recipient = await _getUser(thankYou.recipient.username);
+  const author = await _getUserId(thankYou.author.username);
+  const recipient = await _getUserId(thankYou.recipient.username);
   const reviewers = await getReviewers();
   const text = `🚨 _<@${author}> a écrit un merci à <@${recipient}>. Peux-tu le relire ? 🙏_`;
   for (const reviewer of reviewers) {
     await postMessage(
-      reviewer,
+      await _getUserId(reviewer),
       text,
       [
         {
@@ -69,8 +74,8 @@ export const _askForReview = async (thankYou: ThankYou) => {
   }
 };
 
-export const _getUser = async (username: string) =>
-  (await getProfile(`${username}@xebia.fr`)).user.name;
+export const _getUserId = async (username: string) =>
+  (await getProfile(`${username}@xebia.fr`)).user.id;
 
 export const _validateThankYou = (schema, thankYou) => {
   const {error} = schema.validate(thankYou);
