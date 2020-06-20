@@ -33,7 +33,7 @@ export const getMessages = async () =>
   } as ThankYou));
 
 export const updateMessage = async (id: string, thankYou: ThankYou) => {
-  if (process.env.IS_PROD) {
+  if (process.env.IS_PROD === 'true') {
     return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
   }
 };

@@ -10,7 +10,7 @@ export const postMessage = (
   text: string,
   blocks?: (KnownBlock | Block)[]
 ) => {
-  if (process.env.IS_PROD) {
+  if (process.env.IS_PROD === 'true') {
     return client.chat.postMessage({
       channel,
       text,
