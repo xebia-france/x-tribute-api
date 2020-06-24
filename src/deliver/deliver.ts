@@ -7,12 +7,21 @@ export const deliverPastThanks = async () => {
   const messages = await getApprovedMessages();
   for (let message of messages) {
     if (message.id) {
-      await _deliverThank(message);
-      await updateMessage(message.id, {
-        ...message,
-        status: Status.DELIVERED
-      });
-      await trackNewThankDelivered(message.recipient.username);
+      try {
+        await _deliverThank(message);
+        await updateMessage(message.id, {
+          ...message,
+          status: Status.DELIVERED
+        });
+        await trackNewThankDelivered(message.recipient.username);
+        console.log(`Message delivered to ${message.recipient.username}`);
+      } catch (e) {
+        await updateMessage(message.id, {
+          ...message,
+          status: Status.DELIVERY_ERROR
+        });
+        console.error(`Cannot deliver message to ${message.recipient.username}`);
+      }
     }
   }
   return messages.length;
