@@ -9,7 +9,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-west-1
-  timeout: 60
+  timeout: 240
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
