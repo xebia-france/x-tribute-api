@@ -53,6 +53,7 @@ describe('Reminder', () => {
     }]);
 
     // AFTER
-    jest.clearAllMocks();
+    fetchUsers.mockRestore();
+    getUnwantedReminderUsers.mockRestore();
   });
 });

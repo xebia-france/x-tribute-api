@@ -5,9 +5,11 @@ import {reminder} from '../wording';
 export const remindEveryone = async () => {
   const users = await fetchUsers();
   const noReminderUsers = await getUnwantedReminderUsers();
+  console.log(`Ignore reminder for ${noReminderUsers}`);
   const toRemindUsers = users.filter(u => noReminderUsers.indexOf(u.id) === -1);
   const link = 'https://my.xebia.fr/thankyou';
   for (let user of toRemindUsers) {
+    console.log(`Remind ${user.id}`);
     const message = reminder(user.id, link);
     await postMessage(
       user.id,
