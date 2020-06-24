@@ -58,7 +58,7 @@ export const fetchUsers = async () =>
         u.is_app_user === false;
 
       // @ts-ignore
-      accumulator.push(page.members.filter(isUser));
+      accumulator.push(...page.members.filter(isUser));
 
       return accumulator;
     }));
