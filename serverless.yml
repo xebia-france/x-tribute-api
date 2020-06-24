@@ -9,6 +9,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-west-1
+  timeout: 240
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
@@ -58,7 +59,7 @@ functions:
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
     events:
-      - schedule: cron(0 12 24 * ? *)
+      - schedule: cron(35 12 24 * ? *)
   slack:
     handler: src/handler.handlerSlack
     environment:
