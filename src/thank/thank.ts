@@ -9,7 +9,7 @@ export const thank = async (thankYou: ThankYou) => {
 
   const th = await setMessage({
     ...thankYou,
-    status: Status.DRAFT,
+    status: Status.APPROVED,
   });
 
   await trackNewThankPosted(
@@ -25,7 +25,7 @@ export const _askForReview = async (thankYou: ThankYou) => {
   const author = await _getUserId(thankYou.author.username);
   const recipient = await _getUserId(thankYou.recipient.username);
   const reviewers = await getReviewers();
-  const text = `🚨 _<@${author}> a écrit un merci à <@${recipient}>. Peux-tu le relire ? 🙏_`;
+  const text = `🚨 _<@${author}> a écrit un merci à <@${recipient}> :_`;
   for (const reviewer of reviewers) {
     await postMessage(
       await _getUserId(reviewer),
@@ -48,16 +48,6 @@ export const _askForReview = async (thankYou: ThankYou) => {
         {
           type: 'actions',
           elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Approuver'
-              },
-              action_id: 'reviewApprove',
-              style: 'primary',
-              value: thankYou.id
-            },
             {
               type: 'button',
               text: {

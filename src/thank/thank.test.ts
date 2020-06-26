@@ -66,11 +66,11 @@ describe('thank', () => {
     expect(postMessage).toBeCalledTimes(1);
     expect(postMessage).toHaveBeenCalledWith(
       'orange@xebia.fr',
-      '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr>. Peux-tu le relire ? 🙏_',
+      '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr> :_',
       [
         {
           text: {
-            text: '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr>. Peux-tu le relire ? 🙏_',
+            text: '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr> :_',
             type: 'mrkdwn'
           },
           type: 'section'
@@ -85,16 +85,6 @@ describe('thank', () => {
         {
           type: 'actions',
           elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Approuver'
-              },
-              action_id: 'reviewApprove',
-              style: 'primary',
-              value: '0'
-            },
             {
               type: 'button',
               text: {

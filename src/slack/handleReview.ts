@@ -9,16 +9,7 @@ export const handleReview = async (action: any, user: any, response_url: any, me
     const result = await _checkBeforeApproveOrReject(user.username, action.value);
     let responseSection;
     if (result.code === 200) {
-      if (action.action_id === 'reviewApprove') {
-        responseSection = {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '_✅ Approuvé._'
-          }
-        };
-        await _approve(user.username, action.value);
-      } else if (action.action_id === 'reviewReject') {
+      if (action.action_id === 'reviewReject') {
         responseSection = {
           type: 'section',
           text: {
@@ -54,11 +45,6 @@ const _checkBeforeApproveOrReject = async (username: string, id: string) => {
   try {
     const message = await getMessage(id) as ThankYou;
     switch (message.status) {
-      case Status.APPROVED:
-        return {
-          code: 400,
-          error: `⚠️ Déjà *approuvé* ✅ par <@${await getIdByEmailPrefix(message.reviewedBy!!)}>`,
-        };
       case Status.REJECTED:
         return {
           code: 400,
@@ -72,7 +58,7 @@ const _checkBeforeApproveOrReject = async (username: string, id: string) => {
   } catch (e) {
     return {
       code: 400,
-      error: `⚠️ Merci ${id} introuvable.`,
+      error: `⚠️ Message ${id} introuvable.`,
     };
   }
 };
