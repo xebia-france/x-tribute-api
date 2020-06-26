@@ -1,6 +1,7 @@
-import {_getPreviousPeriod} from './statistics';
+import {_getPreviousPeriod, shareStatistics} from './statistics';
 
 describe('Statistics', () => {
+
   it('should get previous period', () => {
     // GIVEN
     const today = new Date(Date.parse('01 Jan 1970 10:00:00 GMT'));
