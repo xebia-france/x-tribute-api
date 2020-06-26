@@ -64,7 +64,7 @@ functions:
       IS_PROD: ${env:IS_PROD}
       COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
     events:
-      - schedule: cron(35 12 24 * ? *)
+      - schedule: cron(0 8 25 * ? *)
   slack:
     handler: src/handler.handlerSlack
     environment:
