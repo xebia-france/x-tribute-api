@@ -52,7 +52,6 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
     events:
       - schedule: cron(0 8 5 * ? *)
   reminder:
@@ -62,7 +61,6 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
     events:
       - schedule: cron(0 8 25 * ? *)
   slack:
@@ -73,7 +71,6 @@ functions:
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       SIGNING_SECRET: ${env:SIGNING_SECRET}
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
     events:
       - http:
           method: post

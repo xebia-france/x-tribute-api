@@ -29,4 +29,3 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
           IS_PROD: true
-          COLLECTION_SUFFIX: ''
