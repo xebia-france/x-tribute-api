@@ -1,10 +1,10 @@
 import * as firebase from 'firebase-admin';
 import {Status, ThankYou} from './types';
 
-const COLLECTION_THANKS = `x-tribute-thanks${process.env.COLLECTION_SUFFIX || '-dev'}`;
-const COLLECTION_REVIEWER = `x-tribute-reviewers${process.env.COLLECTION_SUFFIX || '-dev'}`;
-const COLLECTION_NO_REMINDER = `x-tribute-no-reminder${process.env.COLLECTION_SUFFIX || '-dev'}`;
-const COLLECTION_STATISTICS = `x-tribute-statistics${process.env.COLLECTION_SUFFIX || '-dev'}`;
+const COLLECTION_THANKS = `x-tribute-thanks${process.env.IS_PROD === 'true' ? '' : '-dev'}`;
+const COLLECTION_REVIEWER = `x-tribute-reviewers${process.env.IS_PROD === 'true' ? '' : '-dev'}`;
+const COLLECTION_NO_REMINDER = `x-tribute-no-reminder${process.env.IS_PROD === 'true' ? '' : '-dev'}`;
+const COLLECTION_STATISTICS = `x-tribute-statistics${process.env.IS_PROD === 'true' ? '' : '-dev'}`;
 
 const app = firebase.initializeApp({
   credential: firebase.credential.applicationDefault(),
