@@ -27,14 +27,12 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
   getThanks:
     handler: src/handler.handlerGetThanks
     environment:
       DATABASE_NAME: ${env:DATABASE_NAME}
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
   deliverPastThankYou:
     handler: src/handler.handlerDeliverPastThankYou
     environment:
@@ -42,7 +40,6 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
-      COLLECTION_SUFFIX: ${env:COLLECTION_SUFFIX}
     events:
       - schedule: cron(0 8 1 * ? *)
   shareStatistics:
