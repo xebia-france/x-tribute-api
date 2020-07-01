@@ -10,7 +10,8 @@ export const shareStatistics = async () => {
   const fromBeginning = await getStatistics('0');
   const today = new Date();
   const previousPeriod = _getPreviousPeriod(today);
-  const lastPeriod = await getStatistics(`${previousPeriod.getFullYear()}${previousPeriod.getMonth()}`);
+  const previousPeriodStats = await getStatistics(`${previousPeriod.getFullYear()}${previousPeriod.getMonth()}`);
+  const lastPeriodStats = await getStatistics(`${today.getFullYear()}${today.getMonth()}`);
 
   const noStatisticsSection = {
     type: 'section',
@@ -35,7 +36,7 @@ export const shareStatistics = async () => {
         text: `Voici les statistiques des *mercis* depuis le début :`
       }
     },
-    ...fromBeginning ? [_buildStatisticSection(fromBeginning)] : [noStatisticsSection],
+    ...fromBeginning ? [_buildStatisticSection(fromBeginning, fromBeginning)] : [noStatisticsSection],
     {
       type: 'section',
       text: {
@@ -43,7 +44,7 @@ export const shareStatistics = async () => {
         text: 'Ainsi que les statistiques du mois dernier :'
       }
     },
-    ...lastPeriod ? [_buildStatisticSection(lastPeriod)] : [noStatisticsSection],
+    ...previousPeriodStats ? [_buildStatisticSection(previousPeriodStats, lastPeriodStats)] : [noStatisticsSection],
     {
       type: 'divider'
     },
@@ -107,20 +108,20 @@ const _incrementGivenThank = async (year: number, month: number) => {
   await incrementStatistic(`${year}${month}`, GIVEN_THANKS_KEY);
 };
 
-const _buildStatisticSection = (statistics) => ({
+const _buildStatisticSection = (previousPeriodStats, lastPeriodStats) => ({
   type: 'section',
   fields: [
     {
       type: 'mrkdwn',
-      text: `*${statistics[GIVEN_THANKS_KEY]}* mercis ont été envoyées ;`
+      text: `*${previousPeriodStats[GIVEN_THANKS_KEY]}* mercis ont été envoyées ;`
     },
     {
       type: 'mrkdwn',
-      text: `*${statistics[PEOPLE_GIVING_THANKS_KEY].length}* Sapients ont remercié d'autres Sapients ;`,
+      text: `*${previousPeriodStats[PEOPLE_GIVING_THANKS_KEY].length}* Sapients ont remercié d'autres Sapients ;`,
     },
-    ...statistics[PEOPLE_RECEIVING_THANKS_KEY] ? [{
+    ...lastPeriodStats[PEOPLE_RECEIVING_THANKS_KEY] ? [{
       type: 'mrkdwn',
-      text: `*${statistics[PEOPLE_RECEIVING_THANKS_KEY].length}* Sapients ont reçu des mercis.`,
+      text: `*${lastPeriodStats[PEOPLE_RECEIVING_THANKS_KEY].length}* Sapients ont reçu des mercis.`,
     }] : [{
       type: 'mrkdwn',
       text: 'Aucun Sapient n\'a reçu de mercis sur la période.'
