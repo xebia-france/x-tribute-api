@@ -15,7 +15,7 @@ const headers = {
 export const handlerThank: APIGatewayProxyHandler = async (event, _context) => {
   if (event.body) {
     try {
-      const id = await thank(JSON.parse(event.body));
+      await thank(JSON.parse(event.body));
       return {
         statusCode: 200,
         headers,
@@ -38,12 +38,12 @@ export const handlerThank: APIGatewayProxyHandler = async (event, _context) => {
 };
 
 export const handlerGetThanks: APIGatewayProxyHandler = async (
-  {requestContext: {authorizer}},
+  {queryStringParameters, requestContext: {authorizer}},
   _context
 ) => {
-  if (authorizer) {
+  if (authorizer && authorizer.userEmail) {
     try {
-      const messages = await getThanks(authorizer.userEmail.split('@xebia.fr')[0]);
+      const messages = await getThanks(queryStringParameters, authorizer);
       return {
         statusCode: 200,
         headers,
@@ -53,14 +53,14 @@ export const handlerGetThanks: APIGatewayProxyHandler = async (
       return {
         statusCode: error.code,
         headers,
-        body: JSON.stringify(error),
+        body: error,
       };
     }
   }
   return {
     statusCode: 401,
     body: JSON.stringify(
-      {error: 'Cannot read required authorizer from event.'}
+      {error: 'Unauthorized'}
     )
   };
 };
