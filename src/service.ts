@@ -32,6 +32,16 @@ export const getMessages = async () =>
     ...d.data(),
   } as ThankYou));
 
+export const getMessagesByAuthor = async (author: string) =>
+  (await db.collection(COLLECTION_THANKS)
+    .where('author.username', '==', author)
+    .get()).docs.map(d => ({id: d.id, ...d.data()} as ThankYou));
+
+export const getMessagesByRecipient = async (author: string) =>
+  (await db.collection(COLLECTION_THANKS)
+    .where('recipient.username', '==', author)
+    .get()).docs.map(d => ({id: d.id, ...d.data()} as ThankYou));
+
 export const updateMessage = async (id: string, thankYou: ThankYou) => {
   if (process.env.IS_PROD === 'true') {
     return await db.collection(COLLECTION_THANKS).doc(id).set(thankYou);
