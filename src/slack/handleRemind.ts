@@ -23,11 +23,13 @@ export const handleRemind = async (action: any, user: any, response_url: any, me
     };
     await _stopReminder(user);
   }
-  await handleInteraction(
-    response_url,
-    message.text,
-    message.blocks,
-    responseSection);
+  if (responseSection) {
+    await handleInteraction(
+      response_url,
+      message.text,
+      message.blocks,
+      responseSection);
+  }
 };
 
 async function _stopReminder(user: any) {
