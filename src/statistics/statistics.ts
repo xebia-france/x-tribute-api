@@ -33,7 +33,7 @@ export const shareStatistics = async () => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `Voici les statistiques des *mercis* depuis le début :`
+        text: `Voici les statistiques des *mercis* depuis mai 2020 :`
       }
     },
     ...fromBeginning ? [_buildStatisticSection(fromBeginning, fromBeginning)] : [noStatisticsSection],
@@ -66,7 +66,7 @@ export const shareStatistics = async () => {
           },
           style: 'primary',
           url: 'https://my.xebia.fr/thankyou',
-          action_id: 'remindGo'
+          action_id: 'remindGeneral'
         },
       ]
     }
