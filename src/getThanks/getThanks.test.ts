@@ -1,8 +1,8 @@
 import {getThanks} from './getThanks';
 import * as service from '../service';
+import {getMessagesByAuthor} from '../service';
 import {Status} from '../types';
 import {AppError} from '../error/AppError';
-import {getMessagesByAuthor} from '../service';
 
 describe('Get thanks', () => {
 
@@ -91,7 +91,24 @@ describe('Get thanks', () => {
     // THEN
     expect(thanks).toEqual([message1, message2]);
 
-    isUsernameInReviewerCollection.mockRestore()
+    isUsernameInReviewerCollection.mockRestore();
+    getMessagesByAuthor.mockRestore();
+  });
+
+  it('should get messages from author with publicissapient.fr', async () => {
+    // GIVEN
+    const isUsernameInReviewerCollection = jest.spyOn(service, 'isUsernameInReviewerCollection');
+    isUsernameInReviewerCollection.mockResolvedValue(true);
+    const getMessagesByAuthor = jest.spyOn(service, 'getMessagesByAuthor');
+    getMessagesByAuthor.mockResolvedValue([message1, message2]);
+
+    // WHEN
+    const thanks = await getThanks({author: 'jd'}, {userEmail: 'jd@publicissapient.fr'});
+
+    // THEN
+    expect(thanks).toEqual([message1, message2]);
+
+    isUsernameInReviewerCollection.mockRestore();
     getMessagesByAuthor.mockRestore();
   });
 

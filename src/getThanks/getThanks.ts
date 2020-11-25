@@ -6,15 +6,19 @@ export const getThanks = async (
   authorizer: { [k: string]: any } | undefined | null
 ) => {
   if (authorizer && authorizer.userEmail) {
-    const emailParts = authorizer.userEmail.split('@xebia.fr');
+    let splitKey = '@publicissapient.fr';
+    if (authorizer.userEmail.endsWith('@xebia.fr')) {
+      splitKey = '@xebia.fr';
+    }
+    const emailParts = authorizer.userEmail.split(splitKey);
     if (emailParts.length > 0) {
       const username = emailParts[0];
       if (qs && (qs.recipient || qs.author)) {
-        if (qs.recipient === username) {
-          return await getThanksByRecipient(qs.recipient);
+        if (qs.recipient === authorizer.userEmail) {
+          return await getThanksByRecipient(username);
         }
-        if (qs.author === username) {
-          return await getThanksByAuthor(qs.author);
+        if (qs.author === authorizer.userEmail) {
+          return await getThanksByAuthor(username);
         }
       } else if (await isUsernameInReviewerCollection(username)) {
         return await getMessages();

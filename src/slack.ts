@@ -63,5 +63,10 @@ export const fetchUsers = async () =>
       return accumulator;
     }));
 
-export const getIdByEmailPrefix = async (username: string) =>
-  (await getProfile(`${username}@xebia.fr`)).user.id;
+export const getIdByEmailPrefix = async (username: string) => {
+  let profile = await getProfile(`${username}@publicissapient.fr`);
+  if (!profile.ok) {
+    profile = await getProfile(`${username}@xebia.fr`);
+  }
+  return profile.user.id;
+};
