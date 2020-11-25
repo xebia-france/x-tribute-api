@@ -15,10 +15,10 @@ export const getThanks = async (
       const username = emailParts[0];
       if (qs && (qs.recipient || qs.author)) {
         if (qs.recipient === authorizer.userEmail) {
-          return await getThanksByRecipient(qs.recipient);
+          return await getThanksByRecipient(username);
         }
         if (qs.author === authorizer.userEmail) {
-          return await getThanksByAuthor(qs.author);
+          return await getThanksByAuthor(username);
         }
       } else if (await isUsernameInReviewerCollection(username)) {
         return await getMessages();
