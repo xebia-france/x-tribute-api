@@ -6,20 +6,18 @@ export const getThanks = async (
   authorizer: { [k: string]: any } | undefined | null
 ) => {
   if (authorizer && authorizer.userEmail) {
-    let splitKey = '';
-    if (authorizer.userEmail.endsWith('@publicissapient.fr')) {
-      splitKey = '@publicissapient.fr';
-    } else if (authorizer.userEmail.endsWith('@xebia.fr')) {
+    let splitKey = '@publicissapient.fr';
+    if (authorizer.userEmail.endsWith('@xebia.fr')) {
       splitKey = '@xebia.fr';
     }
     const emailParts = authorizer.userEmail.split(splitKey);
     if (emailParts.length > 0) {
       const username = emailParts[0];
       if (qs && (qs.recipient || qs.author)) {
-        if (qs.recipient === username) {
+        if (qs.recipient === authorizer.userEmail) {
           return await getThanksByRecipient(qs.recipient);
         }
-        if (qs.author === username) {
+        if (qs.author === authorizer.userEmail) {
           return await getThanksByAuthor(qs.author);
         }
       } else if (await isUsernameInReviewerCollection(username)) {
