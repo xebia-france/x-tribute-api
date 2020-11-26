@@ -64,9 +64,15 @@ export const fetchUsers = async () =>
     }));
 
 export const getIdByEmailPrefix = async (username: string) => {
-  let profile = await getProfile(`${username}@publicissapient.fr`);
-  if (!profile.ok) {
-    profile = await getProfile(`${username}@xebia.fr`);
+  let profile;
+  try {
+    profile = await getProfile(`${username}@publicissapient.fr`);
+  } catch (ignore) {
+    try {
+      profile = await getProfile(`${username}@xebia.fr`);
+    } catch (e) {
+      throw e;
+    }
   }
   return profile.user.id;
 };
