@@ -1,4 +1,4 @@
-import {getIdByEmailPrefix, handleInteraction} from '../slack';
+import {getIdByUsername, handleInteraction} from '../slack';
 import {getMessage, isUsernameInReviewerCollection, updateMessage} from '../service';
 import {Status, ThankYou} from '../types';
 
@@ -48,7 +48,7 @@ const _checkBeforeApproveOrReject = async (username: string, id: string) => {
       case Status.REJECTED:
         return {
           code: 400,
-          error: `⚠️ Déjà *refusé* ❌ par <@${await getIdByEmailPrefix(message.reviewedBy!!)}>`,
+          error: `⚠️ Déjà *refusé* ❌ par <@${await getIdByUsername(message.reviewedBy!!)}>`,
         };
       default:
         return {

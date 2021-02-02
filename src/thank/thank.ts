@@ -1,7 +1,7 @@
 import {Status, ThankYou} from '../types';
 import {thankYouSchema} from '../validation';
 import {getReviewers, setMessage} from '../service';
-import {getIdByEmailPrefix, postMessage} from '../slack';
+import {getIdByUsername, postMessage} from '../slack';
 import {trackNewThankPosted} from '../statistics/statistics';
 
 export const thank = async (thankYou: ThankYou) => {
@@ -22,13 +22,13 @@ export const thank = async (thankYou: ThankYou) => {
 };
 
 export const _askForReview = async (thankYou: ThankYou) => {
-  const author = await getIdByEmailPrefix(thankYou.author.username);
-  const recipient = await getIdByEmailPrefix(thankYou.recipient.username);
+  const author = await getIdByUsername(thankYou.author.username);
+  const recipient = await getIdByUsername(thankYou.recipient.username);
   const reviewers = await getReviewers();
   const text = `🚨 _<@${author}> a écrit un merci à <@${recipient}> :_`;
   for (const reviewer of reviewers) {
     await postMessage(
-      await getIdByEmailPrefix(reviewer),
+      await getIdByUsername(reviewer),
       text,
       [
         {

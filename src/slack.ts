@@ -63,16 +63,40 @@ export const fetchUsers = async () =>
       return accumulator;
     }));
 
-export const getIdByEmailPrefix = async (username: string) => {
+export const getIdByUsername = async (username: string) => {
   let profile;
   try {
     profile = await getProfile(`${username}@publicissapient.fr`);
-  } catch (ignore) {
+  } catch (ignoreUnknownPsf) {
     try {
-      profile = await getProfile(`${username}@xebia.fr`);
-    } catch (e) {
-      throw e;
+      profile = await getProfile(`${username}@publicissapient.com`);
+    } catch (ignoreUnknownPs) {
+      if (username.includes('.')) {
+        try {
+          profile = await getProfile(getPsfUsername(username));
+        } catch (e) {
+          await warnSavAboutUnknownAuthor(username);
+        }
+      } else {
+        await warnSavAboutUnknownAuthor(username);
+      }
     }
   }
   return profile.user.id;
 };
+
+export const getPsfUsername = (username: string) => {
+  const firstnameLastname = username.split('.');
+  return `${firstnameLastname[0].substring(0, 1)}${firstnameLastname[1]}@publicissapient.fr`;
+};
+
+export const warnSavAboutUnknownAuthor = async (username: string) =>
+  await postMessage('#cicero-error', '', [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `:warning: Unknown user: ${username}`
+      }
+    }
+  ]);

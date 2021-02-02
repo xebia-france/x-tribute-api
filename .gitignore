@@ -15,11 +15,7 @@ firebase-admin-service-account.json
 .envrc
 
 # Intellij Idea
-.idea/dictionaries
-.idea/.gitignore
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
+.idea
 *.iml
 
 # Testing purpose
