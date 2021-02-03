@@ -1,4 +1,4 @@
-import {getIdByUsername, getProfile, getPsfUsername, postMessage, warnSavAboutUnknownAuthor} from './slack';
+import {getIdByUsername, getProfile, getPsfUsername, postMessage} from './slack';
 
 const username = process.env.USERNAME || '';
 
@@ -67,10 +67,6 @@ describe('Slack', () => {
   it('should get psf username', () => {
     const psfUsername = getPsfUsername('john.doe');
     expect(psfUsername).toEqual('jdoe@publicissapient.fr');
-  });
-
-  it('should notify of an error identifying author', async () => {
-    await warnSavAboutUnknownAuthor('jdoe@publicissapient.fr');
   });
 
   it('should get id by username psf', async () => {
