@@ -1,7 +1,7 @@
 import {_askForReview, _validateThankYou} from './thank';
 import {thankYouSchema} from '../validation';
 import * as slack from '../slack';
-import {getIdByEmailPrefix} from '../slack';
+import {getIdByUsername} from '../slack';
 import * as service from '../service';
 import {Block, KnownBlock} from '@slack/types';
 import {Status} from '../types';
@@ -32,7 +32,7 @@ describe('thank', () => {
     const getProfile = jest.spyOn(slack, 'getProfile');
     getProfile.mockImplementation((email: string) => Promise.resolve({ok: true, user: {id: email, name: email}}));
     // WHEN
-    const user = await getIdByEmailPrefix('john');
+    const user = await getIdByUsername('john');
     // THEN
     expect(user).toEqual('john@xebia.fr');
     // AFTER
