@@ -27,6 +27,11 @@ functions:
       GOOGLE_APPLICATION_CREDENTIALS: firebase-admin-service-account.json
       SLACK_TOKEN: ${env:SLACK_TOKEN}
       IS_PROD: ${env:IS_PROD}
+  users:
+    handler: src/handler.handlerUsers
+    environment:
+      SLACK_TOKEN: ${env:SLACK_TOKEN}
+      IS_PROD: ${env:IS_PROD}
   getThanks:
     handler: src/handler.handlerGetThanks
     environment:

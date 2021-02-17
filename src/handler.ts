@@ -6,6 +6,7 @@ import {handleSlackRequest} from './slack/handler';
 import {deliverPastThanks} from './deliver/deliver';
 import {remindEveryone} from './reminder/remind';
 import {shareStatistics} from './statistics/statistics';
+import {fetchUsers} from './users/users';
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
@@ -111,5 +112,25 @@ export const handlerStatistics: APIGatewayProxyHandler = async (event, _context)
   return {
     statusCode: 200,
     body: JSON.stringify(statistics)
+  };
+};
+
+export const handlerUsers: APIGatewayProxyHandler = async ({
+                                                             requestContext: {authorizer}
+                                                           }, _context) => {
+  if (authorizer && authorizer.userEmail) {
+    const users = await fetchUsers();
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(users),
+    };
+  }
+  return {
+    statusCode: 401,
+    headers,
+    body: JSON.stringify(
+      {error: 'Unauthorized'}
+    )
   };
 };

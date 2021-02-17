@@ -20,3 +20,6 @@ firebase-admin-service-account.json
 
 # Testing purpose
 local.test.ts
+
+# MacOS
+.DS_Store
