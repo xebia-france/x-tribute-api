@@ -122,11 +122,13 @@ export const handlerUsers: APIGatewayProxyHandler = async ({
     const users = await fetchUsers();
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(users),
     };
   }
   return {
     statusCode: 401,
+    headers,
     body: JSON.stringify(
       {error: 'Unauthorized'}
     )
