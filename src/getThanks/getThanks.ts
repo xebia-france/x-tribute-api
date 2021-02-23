@@ -7,8 +7,8 @@ export const getThanks = async (
 ) => {
   if (authorizer && authorizer.userEmail) {
     let splitKey = '@publicissapient.fr';
-    if (authorizer.userEmail.endsWith('@xebia.fr')) {
-      splitKey = '@xebia.fr';
+    if (authorizer.userEmail.endsWith('@publicissapient.com')) {
+      splitKey = '@publicissapient.com';
     }
     const emailParts = authorizer.userEmail.split(splitKey);
     if (emailParts.length > 0) {

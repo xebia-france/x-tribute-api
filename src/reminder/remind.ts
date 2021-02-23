@@ -7,7 +7,7 @@ export const remindEveryone = async () => {
   const noReminderUsers = await getUnwantedReminderUsers();
   console.log(`Ignore reminder for ${noReminderUsers}`);
   const toRemindUsers = users.filter(u => noReminderUsers.indexOf(u.id) === -1);
-  const link = 'https://my.xebia.fr/thankyou';
+  const link = 'https://home.publicissapient.fr/cicero';
   for (let user of toRemindUsers) {
     console.log(`Remind ${user.id}`);
     const message = reminder(user.id, link);

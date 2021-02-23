@@ -23,9 +23,9 @@ describe('Reminder', () => {
 
     // THEN
     expect(postMessage).toBeCalledTimes(1);
-    expect(postMessage).toBeCalledWith('to', 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, <https://my.xebia.fr/thankyou|my.xebia.fr> est à ta disposition.', [{
+    expect(postMessage).toBeCalledWith('to', 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, <https://home.publicissapient.fr/cicero|home.publicissapient.fr> est à ta disposition.', [{
       'text': {
-        'text': 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, <https://my.xebia.fr/thankyou|my.xebia.fr> est à ta disposition.',
+        'text': 'Bonjour <@to> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t\'ont aidé(e)s ces dernières semaines, <https://home.publicissapient.fr/cicero|home.publicissapient.fr> est à ta disposition.',
         'type': 'mrkdwn'
       }, 'type': 'section'
     }, {
@@ -34,7 +34,7 @@ describe('Reminder', () => {
         'style': 'primary',
         'text': {'text': 'Remercier', 'type': 'plain_text'},
         'type': 'button',
-        'url': 'https://my.xebia.fr/thankyou'
+        'url': 'https://home.publicissapient.fr/cicero'
       }, {
         'action_id': 'remindStop',
         'confirm': {

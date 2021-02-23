@@ -1,1 +1,1 @@
-export const reminder = (id: string, link: string) => `Bonjour <@${id}> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t'ont aidé(e)s ces dernières semaines, <${link}|my.xebia.fr> est à ta disposition.`;
+export const reminder = (id: string, link: string) => `Bonjour <@${id}> ! Si tu souhaites prendre quelques minutes pour remercier les Sapients qui t'ont aidé(e)s ces dernières semaines, <${link}|home.publicissapient.fr> est à ta disposition.`;

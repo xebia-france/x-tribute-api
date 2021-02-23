@@ -52,7 +52,7 @@ export const shareStatistics = async () => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `Si vous souhaitez déposer un merci, rendez-vous sur <https://my.xebia.fr/thankyou|my.xebia.fr> 🚀`
+        text: `Si vous souhaitez déposer un merci, rendez-vous sur <https://home.publicissapient.fr/cicero|home.publicissapient.fr> 🚀`
       }
     },
     {
@@ -65,7 +65,7 @@ export const shareStatistics = async () => {
             text: 'Remercier'
           },
           style: 'primary',
-          url: 'https://my.xebia.fr/thankyou',
+          url: 'https://home.publicissapient.fr/cicero',
           action_id: 'remindGeneral'
         },
       ]
