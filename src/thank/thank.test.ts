@@ -34,7 +34,7 @@ describe('thank', () => {
     // WHEN
     const user = await getIdByUsername('john');
     // THEN
-    expect(user).toEqual('john@xebia.fr');
+    expect(user).toEqual('john@publicissapient.fr');
     // AFTER
     getProfile.mockRestore();
   });
@@ -66,12 +66,12 @@ describe('thank', () => {
     // THEN
     expect(postMessage).toBeCalledTimes(1);
     expect(postMessage).toHaveBeenCalledWith(
-      'orange@xebia.fr',
-      '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr> :_',
+      'orange@publicissapient.fr',
+      '🚨 _<@tomate@publicissapient.fr> a écrit un merci à <@orange@publicissapient.fr> :_',
       [
         {
           text: {
-            text: '🚨 _<@tomate@xebia.fr> a écrit un merci à <@orange@xebia.fr> :_',
+            text: '🚨 _<@tomate@publicissapient.fr> a écrit un merci à <@orange@publicissapient.fr> :_',
             type: 'mrkdwn'
           },
           type: 'section'

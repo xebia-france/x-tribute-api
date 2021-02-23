@@ -39,7 +39,7 @@ describe('Get thanks', () => {
     getMessages.mockResolvedValue([message1, message2]);
 
     // WHEN
-    const thanks = await getThanks(null, {userEmail: 'jd@xebia.fr'});
+    const thanks = await getThanks(null, {userEmail: 'jd@publicissapient.fr'});
 
     // THEN
     expect(thanks).toEqual([message1, message2]);
@@ -56,7 +56,7 @@ describe('Get thanks', () => {
     // WHEN
     const error = new AppError(401, 'Unauthorized');
     await expect(
-      getThanks(null, {userEmail: 'jd@xebia.fr'})
+      getThanks(null, {userEmail: 'jd@publicissapient.fr'})
     ).rejects.toThrow(error);
 
     // THEN
@@ -71,7 +71,7 @@ describe('Get thanks', () => {
     // WHEN
     const error = new AppError(401, 'Unauthorized');
     await expect(
-      getThanks({author: 'dj'}, {userEmail: 'jd@xebia.fr'})
+      getThanks({author: 'dj@publicissapient.fr'}, {userEmail: 'jd@publicissapient.fr'})
     ).rejects.toThrow(error);
 
     // THEN
@@ -81,12 +81,12 @@ describe('Get thanks', () => {
   it('should get messages from author', async () => {
     // GIVEN
     const isUsernameInReviewerCollection = jest.spyOn(service, 'isUsernameInReviewerCollection');
-    isUsernameInReviewerCollection.mockResolvedValue(true);
+    isUsernameInReviewerCollection.mockResolvedValue(false);
     const getMessagesByAuthor = jest.spyOn(service, 'getMessagesByAuthor');
     getMessagesByAuthor.mockResolvedValue([message1, message2]);
 
     // WHEN
-    const thanks = await getThanks({author: 'jd'}, {userEmail: 'jd@xebia.fr'});
+    const thanks = await getThanks({author: 'jd@publicissapient.fr'}, {userEmail: 'jd@publicissapient.fr'});
 
     // THEN
     expect(thanks).toEqual([message1, message2]);
@@ -95,15 +95,15 @@ describe('Get thanks', () => {
     getMessagesByAuthor.mockRestore();
   });
 
-  it('should get messages from author with publicissapient.fr', async () => {
+  it('should get messages from author with publicissapient.com', async () => {
     // GIVEN
     const isUsernameInReviewerCollection = jest.spyOn(service, 'isUsernameInReviewerCollection');
-    isUsernameInReviewerCollection.mockResolvedValue(true);
+    isUsernameInReviewerCollection.mockResolvedValue(false);
     const getMessagesByAuthor = jest.spyOn(service, 'getMessagesByAuthor');
     getMessagesByAuthor.mockResolvedValue([message1, message2]);
 
     // WHEN
-    const thanks = await getThanks({author: 'jd'}, {userEmail: 'jd@publicissapient.fr'});
+    const thanks = await getThanks({author: 'jd@publicissapient.com'}, {userEmail: 'jd@publicissapient.com'});
 
     // THEN
     expect(thanks).toEqual([message1, message2]);
@@ -115,12 +115,12 @@ describe('Get thanks', () => {
   it('should get messages from recipient', async () => {
     // GIVEN
     const isUsernameInReviewerCollection = jest.spyOn(service, 'isUsernameInReviewerCollection');
-    isUsernameInReviewerCollection.mockResolvedValue(true);
+    isUsernameInReviewerCollection.mockResolvedValue(false);
     const getMessagesByRecipient = jest.spyOn(service, 'getMessagesByRecipient');
     getMessagesByRecipient.mockResolvedValue([message1, message2]);
 
     // WHEN
-    const thanks = await getThanks({recipient: 'jd'}, {userEmail: 'jd@xebia.fr'});
+    const thanks = await getThanks({recipient: 'jd@publicissapient.fr'}, {userEmail: 'jd@publicissapient.fr'});
 
     // THEN
     expect(thanks).toEqual([message1, message2]);
@@ -137,7 +137,7 @@ describe('Get thanks', () => {
     // WHEN
     const error = new AppError(401, 'Unauthorized');
     await expect(
-      getThanks({author: 'dj'}, {userEmail: 'jd@xebia.fr'})
+      getThanks({author: 'dj@publicissapient.fr'}, {userEmail: 'jd@publicissapient.fr'})
     ).rejects.toThrow(error);
 
     // THEN
@@ -152,7 +152,7 @@ describe('Get thanks', () => {
     getMessages.mockResolvedValue([message1, message2]);
 
     // WHEN
-    const thanks = await getThanks({someQueryParam: 'someQueryParamValue'}, {userEmail: 'jd@xebia.fr'});
+    const thanks = await getThanks({someQueryParam: 'someQueryParamValue'}, {userEmail: 'jd@publicissapient.fr'});
 
     // THEN
     expect(thanks).toEqual([message1, message2]);
