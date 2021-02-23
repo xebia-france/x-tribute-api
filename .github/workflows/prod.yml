@@ -21,7 +21,6 @@ jobs:
           node-version: '12'
       - run: |
           npm install
-          npm test
           npm run deploy:prod
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
