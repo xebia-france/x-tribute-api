@@ -6,6 +6,7 @@ export const fetchUsers = async () => {
     .filter(user => user.profile && user.profile.email)
     .map(user => ({
       name: user.profile.real_name,
-      username: user.profile.email.split('@')[0]
+      username: user.profile.email.split('@')[0],
+      image: user.profile.image_192,
     }));
 };
