@@ -78,4 +78,9 @@ describe('Slack', () => {
     const id = await getIdByUsername('benjamin.lacroix');
     expect(id).toEqual('U026LPFAV');
   });
+
+  it('should get id by username xebia', async () => {
+    const id = await getIdByUsername('srodrigues');
+    expect(id).toEqual('UB944QZ2Q');
+  });
 });

@@ -71,14 +71,18 @@ export const getIdByUsername = async (username: string) => {
     try {
       profile = await getProfile(`${username}@publicissapient.com`);
     } catch (ignoreUnknownPs) {
-      if (username.includes('.')) {
-        try {
-          profile = await getProfile(getPsfUsername(username));
-        } catch (e) {
+      try {
+        profile = await getProfile(`${username}@xebia.fr`);
+      } catch (ignoreUnknownX) {
+        if (username.includes('.')) {
+          try {
+            profile = await getProfile(getPsfUsername(username));
+          } catch (e) {
+            await warnSavAboutUnknownAuthor(username);
+          }
+        } else {
           await warnSavAboutUnknownAuthor(username);
         }
-      } else {
-        await warnSavAboutUnknownAuthor(username);
       }
     }
   }
